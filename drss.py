@@ -118,6 +118,9 @@ def main():
                 continue
             # add secondary filters here (ie, stop hosting TSwizzle)
             torrent_file = download_torrentfile(torrent)
+            if args.dryrun:
+                print(f"Pretending to add torrent {torrent}")
+                continue
             upload = dc.upload_torrent(
                 torrent_path=torrent_file,
                 add_paused=False,
