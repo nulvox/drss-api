@@ -10,7 +10,7 @@ Example scenarios for this tool:
   * you just don't like plugins? :shrug:
 
 # What?
-This tool consumes a list of rss feeds (`feeds.txt`), your webUI credentials (`$DUN`, `$DPW`, and `$DURL`), and a json description of the server limits (limits.json) then adds torrents with the configured auto-remove rules (in `limits.json`) via the webui API. That simple.
+This tool consumes a list of rss feeds (`feeds.txt`) and your webUI credentials (`$DUN`, `$DPW`, and `$DURL`) then adds torrents with the configured auto-remove rules (in deluge auto-managed rules) via the webui API. That simple.
 
 # How?
 
@@ -19,7 +19,7 @@ This tool's execution environment needs:
   - your creds defined in the env vars (or at the cli)
   - python3 available in $PATH
   - the python packages venv and pip installed
-  - valid feeds.txt and limits.json files
+  - valid feeds.txt file
   - a working deluge webui available on the network
   - this repo cloned
 
@@ -33,7 +33,7 @@ pip install -r requirements.txt
 
 ## Running
 ```
-./drss.py -F feeds.txt -L limits.json 
+./drss.py -F feeds.txt  
 ```
 
 ## Setting up a service

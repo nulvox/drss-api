@@ -10,12 +10,6 @@ parser.add_argument(
     help="Path to a file containing a list of RSS feed URLs 1 URL per line",
     required=True,
 )
-parser.add_argument(
-    "-L",
-    "--limits-file",
-    help="Path to a json file describing the limits, sane defaults will be selected.",
-    required=False,
-)
 # parser.add_argument("-R", "--rules-file", help="Path to a file with the rss content filter rules... tbd")
 parser.add_argument(
     "-u",
@@ -86,15 +80,6 @@ def main():
     feedlist = get_feed_list(args.feeds)
     if not feedlist:
         raise ValueError("No feed list supplied.")
-    limitsdict = get_limits_dict(args.limits)
-    # limits_keys = list(limitsdict.keys())
-    # missing_fileds = []
-    # @TODO set up required fields
-    # for key in limits_req_fields:
-    #    if field not in limits_keys:
-    #        missing_fileds.append(key)
-    # if missing_fields:
-    #    raise ValueError(f'The following required fields were not defined in the supplied limits file: {missing_fileds}')
     # loop over RSS feeds to work our magic
     for feed in feedlist:
         # runs check_limit on self
