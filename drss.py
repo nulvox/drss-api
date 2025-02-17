@@ -30,7 +30,7 @@ parser.add_argument(
     default=environ.get("DURL", default="http://127.0.0.1:8112"),
 )
 parser.add_argument("-D", "--dryrun", help="Don't add torrents, just do a dry run")
-args = parser.parser_args()
+args = parser.parse_args()
 
 # ensure creds were supplied to do the work
 if args.password is None:
