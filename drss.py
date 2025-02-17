@@ -6,17 +6,11 @@ from os import environ
 parser = argparse.ArgumentParser()
 parser.add_argument(
     "-F",
-    "--feeds-file",
+    "--feedsfile",
     help="Path to a file containing a list of RSS feed URLs 1 URL per line",
     required=True,
 )
 # parser.add_argument("-R", "--rules-file", help="Path to a file with the rss content filter rules... tbd")
-parser.add_argument(
-    "-u",
-    "--username",
-    help="Deluge webui username, deffaults to env $DUN and falls back to 'admin'",
-    default=environ.get("DUN", default="admin"),
-)
 parser.add_argument(
     "-p",
     "--password",
@@ -25,7 +19,7 @@ parser.add_argument(
 )
 parser.add_argument(
     "-d",
-    "--deluge-url",
+    "--delugeurl",
     help="URL to the deluge instance, defaults to env $DURL and falls back to '127.0.0.1:8112'",
     default=environ.get("DURL", default="http://127.0.0.1:8112"),
 )
@@ -83,7 +77,7 @@ def main():
     dc = DelugeWebClient(url=args.delugeurl, password=args.password)
     dc.login()
     context = dc.get_torrents_status(keys=["name"])
-    feedlist = get_feed_list(args.feeds)
+    feedlist = get_feed_list(args.feedsfile)
     if not feedlist:
         raise ValueError("No feed list supplied.")
     # loop over RSS feeds to work our magic
