@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import argparse, feedparser, json, requests, urllib
 from deluge_web_client import DelugeWebClient
-from os import environ
+from os import environ,path
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -81,6 +81,7 @@ def get_feed_list(feed_file):
 # download the torrent file from the feed
 #  return a string with the path to the file
 def download_torrentfile(torrent):
+    
     pass
 
 def main():
@@ -101,11 +102,15 @@ def main():
             )
             break
         # build the feed parser
+        candidate_url = True
         try:
             urllib.parse.urlparse(feed)
         except:
-            print(f"Invalid url {feed} in list, continuing loop...")
-            continue
+            print(f"Invalid url {feed} in list, assuming local file...")
+            candidate_url = False
+            if not (candidate_url and path.exists(feed) and path.isfile(feed)):
+                print(f"Not a valid url or filepath... continuring loop...")
+                continue
         try:
             content = feedparser.parse(feed)
         except Exception as e:
