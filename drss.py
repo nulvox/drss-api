@@ -29,6 +29,12 @@ parser.add_argument(
     action="store_true",
     help="Don't add torrents, just do a dry run",
 )
+parser.add_argument(
+    "-v",
+    "--verbose",
+    action="store_true",
+    help="Make more output",
+)
 args = parser.parse_args()
 
 # ensure creds were supplied to do the work
@@ -72,6 +78,10 @@ def get_feed_list(feed_file):
     with open(feed_file, "r") as feeds:
         return feeds.readlines()
 
+# download the torrent file from the feed
+#  return a string with the path to the file
+def download_torrentfile(torrent):
+    pass
 
 def main():
     # ensure the deluge service is running and likes your creds
@@ -102,8 +112,12 @@ def main():
             print(e)
             print(f"Cloud not fetch rss feed {feed}, continuing loop..")
             continue
+        print("setting feed...")
         content = feedparser.parse(feed)
+        print(f"using this content:\n{content}")
         for torrent in content["entries"]:
+            if args.verbose:
+                print(f"checking torrent {torrent}")
             if check_limit(0, dc) > 0:
                 print(
                     "Deluge server limits already met or exceeded, ending feed processing for {feed}."
@@ -120,10 +134,10 @@ def main():
                 )
                 continue
             # add secondary filters here (ie, stop hosting TSwizzle)
-            torrent_file = download_torrentfile(torrent)
             if args.dryrun:
                 print(f"Pretending to add torrent {torrent}")
                 continue
+            torrent_file = download_torrentfile(torrent)
             upload = dc.upload_torrent(
                 torrent_path=torrent_file,
                 add_paused=False,
