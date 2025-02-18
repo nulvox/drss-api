@@ -61,9 +61,10 @@ def already_active(torrent, context):
 
 
 # Check how much the disk quota will overflow if we add the torrent
-def check_limit(delta):
-    free_space = dc.get_free_space(path="rss")
-    return float(delta) - float(fsi.interpret(free_space))
+def check_limit(delta, dc):
+    free_space_resp = dc.get_free_space(path="rss")
+    free_space = free_space_resp.result
+    return float(delta) - float(free_space)
 
 
 # open the feed list file and generate the list object
@@ -83,7 +84,7 @@ def main():
     # loop over RSS feeds to work our magic
     for feed in feedlist:
         # runs check_limit on self
-        if not check_limit(0):
+        if not check_limit(0, dc):
             # breaks the loop if the limit is already met or exceeded
             print(
                 "Deluge Server limits already met or exceeded, ending feed processing."
@@ -96,11 +97,14 @@ def main():
             print(f"Invalid url {feed} in list, continuing loop...")
             continue
         try:
-            content = feedparser.parser(feed)
-        except:
+            content = feedparser.parse(feed)
+        except Exception as e:
+            print(e)
             print(f"Cloud not fetch rss feed {feed}, continuing loop..")
+            continue
+        content = feedparser.parse(feed)
         for torrent in content["entries"]:
-            if check_limit(0) > 0:
+            if check_limit(0, dc) > 0:
                 print(
                     "Deluge server limits already met or exceeded, ending feed processing for {feed}."
                 )
@@ -110,7 +114,7 @@ def main():
                 continue
             sizeh = torrent["summary_detail"]["value"].split(";")[0]
             size = fsi.interpret(sizeh)
-            if check_limit(size) > 0:
+            if check_limit(size, dc) > 0:
                 print(
                     f"Torrent {torrent} with size {sizeh} exceeds the remaining limits, continuing loop..."
                 )
